@@ -1,10 +1,11 @@
 <?php
 
 
-namespace AppBundle\Domain;
+namespace AppBundle\Entity;
 
 use Hateoas\Configuration\Annotation as Hateoas;
 use JMS\Serializer\Annotation as Serializer;
+use Doctrine\ORM\Mapping as ORM;
 
 /**
  *
@@ -14,18 +15,33 @@ use JMS\Serializer\Annotation as Serializer;
  *     href = "expr('/api/enterprises/' ~ object.getEnterprise().getId())",
  *     exclusion = @Hateoas\Exclusion(excludeIf = "expr(object.getEnterprise() === null)")
  * )
+ * @ORM\Entity()
+ * @ORM\Table(name="USERS")
  */
 class User
 {
-
-    private $id;
-    private $firstName;
-    private $lastName;
+    /**
+     * @ORM\Id
+     * @ORM\Column(name="ID", type="string", length=36)
+     */
+    protected $id;
+    /**
+     * @var string
+     * @ORM\Column(name="FIRSTNAME", type="string")
+     */
+    protected $firstName;
+    /**
+     * @var string
+     * @ORM\Column(name="LASTNAME", type="string")
+     */
+    protected $lastName;
     /**
      * @var Enterprise
      * @Serializer\Exclude()
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Enterprise")
+     * @ORM\JoinColumn(name="ENTERPRISE_ID", referencedColumnName="ID")
      */
-    private $enterprise;
+    protected $enterprise;
 
     /**
      * User constructor.

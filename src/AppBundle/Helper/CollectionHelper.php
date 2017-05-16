@@ -20,7 +20,7 @@ class CollectionHelper
     private $startPage;
     private $nbOfPages;
     private $limit;
-    private $relations;
+    private $relations = [];
 
     private $pageQueryParameter;
     private $limitQueryParameter;

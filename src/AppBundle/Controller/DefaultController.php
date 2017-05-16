@@ -32,7 +32,7 @@ class DefaultController extends Controller
 
         return $this->redirectToRoute('users_route', [
             'page' => 1,
-            'limit' => 10
+            'limit' => 1000
         ]);
     }
 
@@ -41,19 +41,18 @@ class DefaultController extends Controller
      * @param Request $request
      * @return Response
      */
-    public function usersAction(Request $request, $page = 1, $limit = 10)
+    public function usersAction(Request $request, $page = 1, $limit = 1000)
     {
         $nextPage = $page +1;
         $helper = new CollectionHelper();
+        $nb = $this->get('doctrine.dbal.default_connection')->executeQuery("SELECT COUNT(ID) AS NB FROM USERS;")->fetch()['NB'];
+        $users = $this->getDoctrine()->getRepository('AppBundle:User')->findBy([], array('firstName' => 'ASC'), $limit, $page);
+        $nbOfPages = intval( $nb / $limit);
 
         $collection = $helper
-            ->withCollection($this->buildUsers($page, $limit), 'ns:users')
-            ->withPagination($page, 100, $limit)
+            ->withCollection($users, 'ns:users')
+            ->withPagination($page, $nbOfPages, $limit)
             ->withRouteDefinition('users_route')
-            ->addRelations('self', "/users/$page/$limit")
-            ->addRelations('first', "/users/1/$limit")
-            ->addRelations('last', "/users/100/$limit")
-            ->addRelations('next', "/users/$nextPage/$limit")
             ->buildCollection();
 
         return new JsonResponse(json_decode($this->get('serializer')->serialize($collection, 'json'), true));

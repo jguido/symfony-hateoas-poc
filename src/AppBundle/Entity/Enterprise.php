@@ -1,20 +1,30 @@
 <?php
 
 
-namespace AppBundle\Domain;
+namespace AppBundle\Entity;
 
 use Hateoas\Configuration\Annotation as Hateoas;
+use Doctrine\ORM\Mapping as ORM;
 
 /**
  *
  * @Hateoas\Relation("self", href = "expr('/api/enterprises/' ~ object.getId())")
+ * @ORM\Entity()
+ * @ORM\Table(name="ENTERPRISES")
  */
 class Enterprise
 {
 
-
-    private $id;
-    private $name;
+    /**
+     * @ORM\Id
+     * @ORM\Column(name="ID", type="string", length=36)
+     */
+    protected $id;
+    /**
+     * @var string
+     * @ORM\Column(name="NAME", type="string")
+     */
+    protected $name;
 
     /**
      * Enterprise constructor.
